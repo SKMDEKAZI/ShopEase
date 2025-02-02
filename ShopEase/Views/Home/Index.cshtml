@@ -1,0 +1,241 @@
+﻿@{
+    ViewData["Title"] = "ShopEase Portal";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1E3A56;
+            --accent-blue: #00B4D8;
+            --success-green: #28A745;
+            --warning-orange: #FFC107;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .header-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            margin: 2rem auto;
+            max-width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            padding: 2.5rem;
+        }
+
+        .brand-header {
+            font-size: 2.8rem;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slogan-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .trolley-icon {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .slogan-text {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        .role-card {
+            border: none;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .role-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            }
+
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: var(--accent-blue);
+            color: white !important;
+            margin: 1rem auto;
+            font-size: 1.8rem !important;
+        }
+
+        .shiny-button {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white !important;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .shiny-button::before {
+                content: "";
+                position: absolute;
+                top: -100%;
+                left: -100%;
+                width: 250%;
+                height: 250%;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 60%);
+                transform: rotate(25deg);
+                transition: all 0.6s ease;
+            }
+
+            .shiny-button:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 25px rgba(30, 58, 86, 0.3);
+            }
+
+                .shiny-button:hover::before {
+                    top: 100%;
+                    left: 100%;
+                }
+
+        .role-title {
+            color: var(--primary-blue);
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #6c757d !important;
+            min-height: 80px;
+            margin-bottom: 1.5rem !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <main role="main">
+            <div class="header-container text-center">
+                <h1 class="brand-header">
+                    <span class="gradient-text">ShopEase</span>
+                    <div class="slogan-container">
+                        <i class="fas fa-shopping-cart trolley-icon"></i>
+                        <span class="slogan-text">Shopping Made Simple</span>
+                    </div>
+                </h1>
+
+                <div class="row g-4 justify-content-center">
+                    <!-- Customer Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="role-card h-100">
+                            <div class="card-body p-4">
+                                <i class="fas fa-user role-icon"></i>
+                                <h3 class="role-title">Customer</h3>
+                                <p class="card-text">
+                                    Find products easily and request in-store assistance with our seamless platform
+                                </p>
+                                <div class="text-center">
+                                    <a asp-controller="Customers" asp-action="Index" class="btn btn-lg shiny-button">
+                                        Enter Portal <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="role-card h-100">
+                            <div class="card-body p-4">
+                                <i class="fas fa-headset role-icon"></i>
+                                <h3 class="role-title">Store Staff</h3>
+                                <p class="card-text">
+                                    Manage customer requests and provide real-time assistance through our dedicated interface
+                                </p>
+                                <div class="text-center">
+                                    <a asp-controller="Staff" asp-action="Dashboard" class="btn btn-lg shiny-button">
+                                        Staff Dashboard <i class="fas fa-tasks ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="role-card h-100">
+                            <div class="card-body p-4">
+                                <i class="fas fa-lock role-icon"></i>
+                                <h3 class="role-title">Administrator</h3>
+                                <p class="card-text">
+                                    Monitor system performance and manage user access with advanced controls
+                                </p>
+                                <div class="text-center">
+                                    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-lg shiny-button">
+                                        Admin Console <i class="fas fa-cog ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="position-fixed bottom-0 end-0 m-4">
+        <button class="btn btn-primary btn-lg rounded-circle shadow-lg help-btn"
+                data-bs-toggle="tooltip"
+                title="Need help?"
+                style="width: 60px; height: 60px;">
+            <i class="fas fa-question"></i>
+        </button>
+    </div>
+
+    @section Scripts {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Tooltip initialization
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            });
+        </script>
+    }
+</body>
+</html>

@@ -1,0 +1,69 @@
+﻿@model ShopEase.Models.Customer
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1 class="text-center text-primary mb-4">Create Customer</h1>
+
+<div class="container">
+    <h4 class="text-secondary text-center mb-3">Fill in the details below</h4>
+    <hr class="mb-4" />
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Create" class="p-4 shadow-sm rounded bg-light">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Customer Name -->
+                <div class="form-group mb-3">
+                    <label asp-for="CustomerName" class="form-label fw-bold"></label>
+                    <input asp-for="CustomerName" class="form-control" placeholder="Enter first name" />
+                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                </div>
+
+                <!-- Customer Surname -->
+                <div class="form-group mb-3">
+                    <label asp-for="CustomerSurname" class="form-label fw-bold"></label>
+                    <input asp-for="CustomerSurname" class="form-control" placeholder="Enter last name" />
+                    <span asp-validation-for="CustomerSurname" class="text-danger"></span>
+                </div>
+
+                <!-- Customer Email -->
+                <div class="form-group mb-4">
+                    <label asp-for="CustomerEmail" class="form-label fw-bold"></label>
+                    <input asp-for="CustomerEmail" type="email" class="form-control" placeholder="Enter email address" />
+                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" style="background-color: var(--primary-blue);">
+                        <i class="fas fa-save me-2"></i> Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-sm px-4">
+            <i class="fas fa-arrow-left me-2"></i> Back to List
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        gsap.from("form", { opacity: 0, y: 30, duration: 1 });
+        gsap.from("h1, h4", { opacity: 0, y: -20, duration: 0.8, stagger: 0.2 });
+        gsap.from(".btn-primary", { opacity: 0, scale: 0.8, duration: 0.8, delay: 0.5 });
+    });
+</script>
+

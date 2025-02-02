@@ -1,0 +1,343 @@
+﻿@model ShopEase.Models.CustomerViewModel
+
+@{
+    ViewData["Title"] = "Customer Portal - ShopEase";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1E3A56;
+            --accent-blue: #00B4D8;
+            --success-green: #28A745;
+            --warning-orange: #FFC107;
+        }
+
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .hover-transform {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .hover-transform:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+            }
+
+        .main-cta-card {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2A4B6A 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(30, 58, 86, 0.2);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .testimonial-slider {
+            min-height: 200px;
+            position: relative;
+        }
+
+        .testimonial-item {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            position: absolute;
+            width: 100%;
+        }
+
+            .testimonial-item.active {
+                opacity: 1;
+            }
+
+        .form-control:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.25rem rgba(0, 180, 216, 0.25);
+        }
+
+        .shiny-button {
+            background: linear-gradient(135deg, #00aaff 0%, #0077cc 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+            .shiny-button:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 25px rgba(0, 170, 255, 0.3);
+            }
+    </style>
+</head>
+
+<body>
+    <main class="py-5">
+        <!-- Statistics Panel -->
+        <div class="container mb-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-warning mb-3 mx-auto">
+                                <i class="fas fa-bolt fa-2x text-white"></i>
+                            </div>
+                            <h4 class="text-dark mb-3">Instant Access</h4>
+                            <p class="text-muted mb-0">Immediate service activation</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-success mb-3 mx-auto">
+                                <i class="fas fa-check-circle fa-2x text-white"></i>
+                            </div>
+                            <h4 class="text-dark mb-3">Verified Partners</h4>
+                            <p class="text-muted mb-0">Trusted nationwide network</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary mb-3 mx-auto">
+                                <i class="fas fa-lock fa-2x text-white"></i>
+                            </div>
+                            <h4 class="text-dark mb-3">Secure Data</h4>
+                            <p class="text-muted mb-0">256-bit encryption</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="container">
+            <div class="row justify-content-center g-4">
+                <!-- Benefits Card -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="feature-icon bg-warning me-3">
+                                    <i class="fas fa-crown fa-lg text-white"></i>
+                                </div>
+                                <h4 class="mb-0 text-dark">Premium Benefits</h4>
+                            </div>
+                            <ul class="list-unstyled">
+                                <li class="mb-3 d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="text-dark">Priority Assistance</span>
+                                </li>
+                                <li class="mb-3 d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="text-dark">Exclusive Discounts</span>
+                                </li>
+                                <li class="mb-3 d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="text-dark">VIP Event Access</span>
+                                </li>
+                                <li class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span class="text-dark">Personalized Service</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Central Signup Card -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card main-cta-card h-100">
+                        <div class="card-body text-center p-5">
+                            <div class="mb-4">
+                                <i class="fas fa-user-check fa-4x text-white"></i>
+                            </div>
+                            <h2 class="text-white mb-3">Get Started</h2>
+                            <p class="text-light mb-4">
+                                Create your account to access exclusive features
+                            </p>
+                            <button class="btn btn-light btn-lg rounded-pill px-5 fw-bold shiny-button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#createCustomerModal">
+                                Sign Up Now <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials Card -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="feature-icon bg-info me-3">
+                                    <i class="fas fa-comments fa-lg text-white"></i>
+                                </div>
+                                <h4 class="mb-0 text-dark">Customer Stories</h4>
+                            </div>
+                            <div class="testimonial-slider">
+                                <div class="testimonial-item active">
+                                    <p class="text-muted fst-italic">"Signing up was the best decision! The service is amazing."</p>
+                                    <div class="text-primary mt-2">- Sarah J.</div>
+                                </div>
+                                <div class="testimonial-item">
+                                    <p class="text-muted fst-italic">"Instant access to exclusive deals worth every minute!"</p>
+                                    <div class="text-primary mt-2">- Mike R.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <section class="container mt-5">
+            <h3 class="text-center mb-5 fw-bold text-dark">Why Register With Us?</h3>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon bg-primary me-3">
+                                    <i class="fas fa-gift fa-lg text-white"></i>
+                                </div>
+                                <h5 class="mb-0 text-dark">Exclusive Offers</h5>
+                            </div>
+                            <p class="text-muted mb-0">Special discounts and early access to sales</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 hover-transform border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="feature-icon bg-success me-3">
+                                    <i class="fas fa-clock fa-lg text-white"></i>
+                                </div>
+                                <h5 class="mb-0 text-dark">Fast Service</h5>
+                            </div>
+                            <p class="text-muted mb-0">Priority access to in-store assistance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="position-fixed bottom-0 end-0 m-4">
+        <button class="btn btn-primary btn-lg rounded-circle shadow-lg help-btn"
+                data-bs-toggle="tooltip"
+                title="Need help?"
+                style="width: 60px; height: 60px;">
+            <i class="fas fa-question"></i>
+        </button>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="createCustomerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Create Account</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-black">First Name</label>
+                            <input asp-for="Customer.CustomerName"
+                                   class="form-control rounded-pill py-2"
+                                   placeholder="Enter your first name">
+                            <span asp-validation-for="Customer.CustomerName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-black">Last Name</label>
+                            <input asp-for="Customer.CustomerSurname"
+                                   class="form-control rounded-pill py-2"
+                                   placeholder="Enter your last name">
+                            <span asp-validation-for="Customer.CustomerSurname" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-black">Email Address</label>
+                            <input asp-for="Customer.CustomerEmail"
+                                   type="email"
+                                   class="form-control rounded-pill py-2"
+                                   placeholder="your.email@example.com">
+                            <span asp-validation-for="Customer.CustomerEmail" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold">
+                                <i class="fas fa-user-check me-2"></i>Complete Registration
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Testimonial slider
+                const testimonials = document.querySelectorAll('.testimonial-item');
+                let current = 0;
+
+                function showTestimonial(index) {
+                    testimonials.forEach(t => t.classList.remove('active'));
+                    testimonials[index].classList.add('active');
+                }
+
+                function nextTestimonial() {
+                    current = (current + 1) % testimonials.length;
+                    showTestimonial(current);
+                }
+
+                showTestimonial(0);
+                setInterval(nextTestimonial, 5000);
+
+                // Tooltip initialization
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                // Form submission handler
+                $('form').submit(function() {
+                    $(this).find('button[type="submit"]').prop('disabled', true);
+                });
+            });
+        </script>
+    }
+</body>
+</html>

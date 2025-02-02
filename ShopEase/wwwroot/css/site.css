@@ -1,0 +1,304 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+/* site.css */
+:root {
+    --primary-blue: #1E3A56;
+    --secondary-blue: #4F7A9C;
+    --light-grey: #EAEFF3;
+    --dark-grey: #2C3E50;
+    --transition-speed: 0.3s;
+}
+
+@media (min-width: 768px) {
+    .brand-header {
+        font-size: 3.5rem;
+    }
+    /* Global Styles */
+    body {
+        background: white;
+        color: var(--light-grey);
+        font-family: 'Arial', sans-serif;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+
+    /* Enhanced Navbar Styles */
+    .navbar {
+        background-color: var(--primary-blue);
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+        background: url('../images/Logo.png') no-repeat left center;
+        background-size: contain;
+        padding-left: 3.125rem;
+        height: 2.5rem;
+        width: 12.5rem;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        transition: opacity var(--transition-speed);
+    }
+
+        .navbar-brand:hover {
+            opacity: 0.9;
+        }
+
+    /* Enhanced Role Card Styles */
+    .role-card {
+        background-color: white;
+        border-radius: 1rem;
+        border: none;
+        border-top: 4px solid var(--secondary-blue);
+        transition: all var(--transition-speed);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(79, 122, 156, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+
+        .role-card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+        }
+
+            .role-card:hover::before {
+                opacity: 1;
+            }
+
+    .role-icon {
+        font-size: 3rem;
+        color: var(--primary-blue);
+        transition: transform var(--transition-speed), color var(--transition-speed);
+    }
+
+    .role-card:hover .role-icon {
+        transform: scale(1.1);
+        color: var(--secondary-blue);
+    }
+
+    .role-title {
+        color: var(--dark-grey);
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 1rem 0;
+        transition: color var(--transition-speed);
+    }
+
+    .role-card:hover .role-title {
+        color: var(--secondary-blue);
+    }
+
+    /* Enhanced Button Styles */
+    .btn-role {
+        background-color: var(--secondary-blue);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all var(--transition-speed);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-role::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width var(--transition-speed), height var(--transition-speed);
+        }
+
+        .btn-role:hover {
+            background-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+        }
+
+
+            .btn-role:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+
+    /* Enhanced Footer Styles */
+    .footer {
+        background-color: var(--dark-grey);
+        color: var(--light-grey);
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        position: relative;
+    }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--light-grey), transparent);
+        }
+
+    /* Animation Classes */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .role-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .navbar {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-brand {
+            width: 10rem;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.25rem;
+        }
+    }
+
+    .table {
+        background-color: #fff;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+    }
+
+        .table thead {
+            background-color: #1E3A56; /* Darker shade of primary blue */
+            color: #fff; /* White text color for contrast */
+        }
+
+            .table thead th {
+                font-weight: bold;
+            }
+
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f3f7;
+    }
+
+    .table-primary {
+        background-color: var(--primary-blue);
+        color: #fff;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border-radius: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (min-width: 768px) {
+        .brand-header
+
+        .modal-header {
+            background-color: var(--primary-blue);
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-radius: 1rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+        }
+
+            .btn:hover {
+                background-color: var(--secondary-blue);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-primary {
+            color: var(--primary-blue) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary-blue);
+        }
+

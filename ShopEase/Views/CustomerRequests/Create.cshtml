@@ -1,0 +1,504 @@
+﻿@model ShopEase.Models.CustomerRequest
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(30, 58, 86, 0.3);
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    body {
+        background-color: white;
+    }
+    :root {
+        --primary-blue: #1E3A56;
+        --accent-blue: #00B4D8;
+        --success-green: #28A745;
+        --warning-orange: #FFC107;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+        border: none;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    .produce {
+        background: #c8e6c9 !important;
+    }
+
+    .bakery {
+        background: #fff9c4 !important;
+    }
+
+    .dairy {
+        background: #e3f2fd !important;
+    }
+
+    .frozen {
+        background: #e1bee7 !important;
+    }
+
+    .household {
+        background: #d7ccc8 !important;
+    }
+
+    .modal-header {
+        background-color: var(--primary-blue);
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .store-map-container {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin: 1rem auto;
+        max-width: 1000px;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .store-map {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        grid-template-rows: repeat(12, 30px);
+        gap: 1px;
+        background: #fff;
+        padding: 0.5rem;
+        border-radius: 8px;
+        position: relative;
+        min-width: 600px;
+        transition: transform 0.3s ease;
+    }
+
+    .map-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        padding: 0.3rem;
+        text-align: center;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: white;
+        border: 1px solid #dee2e6;
+        color: var(--primary-blue);
+        position: relative;
+    }
+
+    .aisle-group {
+        position: relative;
+        background: whitesmoke;
+        border: 1px solid #dee2e6;
+        padding: 0.3rem;
+    }
+
+    .aisle-number {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        font-size: 0.75rem;
+        color: black;
+        background: rgba(255,255,255,0.9);
+        padding: 0 3px;
+        border-radius: 3px;
+    }
+
+    /* Strategic Area Styling */
+    .entrance-exit {
+        grid-area: 1 / 1 / 2 / 4;
+        background: #4CAF50;
+        color: white;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .checkout {
+        grid-area: 1 / 13 / 3 / 17;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+        padding: 0.2rem;
+    }
+
+    .power-wall {
+        grid-area: 3 / 1 / 5 / 5;
+        background: #9C27B0;
+        color: white;
+    }
+
+    .window-display {
+        grid-area: 1 / 5 / 2 / 9;
+        background: #00BCD4;
+        color: white;
+    }
+
+    .impulse {
+        grid-area: 2 / 9 / 3 / 13;
+        background: #FFEB3B;
+    }
+
+    .customer-flow {
+        grid-area: 4 / 5 / 8 / 13;
+        background: #e9ecef;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 4px;
+        padding: 0.4rem;
+    }
+
+    .grocery-aisles {
+        grid-area: 5 / 1 / 12 / 17;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 2px;
+    }
+
+    /* Interactive Elements */
+    .map-item:hover {
+        transform: scale(1.03);
+        box-shadow: 0 2px 8px rgba(30, 58, 86, 0.15);
+        z-index: 2;
+    }
+
+        .map-item:hover::after {
+            content: attr(data-description);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+    .selected-area {
+        border: 2px solid var(--accent-blue) !important;
+        box-shadow: 0 0 15px rgba(0, 180, 216, 0.2) !important;
+    }
+
+    /* Guide Panel */
+    .guide-panel {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* Form Elements */
+    .form-control:focus {
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 0 0.25rem rgba(0, 180, 216, 0.25);
+    }
+
+    .modal-header {
+        background: var(--primary-blue);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .brand-header {
+        font-size: 2.8rem;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.5rem;
+        text-align: center; /* Centers all content within the h1 */
+    }
+
+    .gradient-text {
+        background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .slogan-container {
+        align-items: center;
+        gap: 1rem;
+        display: inline-block; /* Keeps the icon next to the text */
+        margin-top: 10px; /* Adjust the vertical space if needed */
+    }
+
+    .map-icon {
+        font-size: 30px;
+        background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: transform 0.3s ease;
+    }
+
+    .slogan-text {
+        font-size: 1.5rem;
+        color: var(--primary-blue);
+        font-weight: 500;
+        letter-spacing: 0.03em;
+    }
+
+    /* Zoom Controls */
+    .zoom-controls .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+        color: white;
+        border: none;
+
+
+    }
+
+</style>
+
+<h1 class="brand-header">
+    <span class="gradient-text">Store Floor Plan</span>
+    <div class="slogan-container">
+        <i class="fas fa-map-marker-alt map-icon"></i>
+    </div>
+</h1>
+
+
+<div class="store-map-container">
+    <div class="store-map">
+        <div class="map-item entrance-exit"
+             data-description="Main entry/exit with security gates"
+             onclick="handleAreaSelection(event, 'ENT', 'Entrance & Exit')">
+            Entrance & Exit
+        </div>
+
+        <div class="checkout">
+            @for (int i = 1; i <= 3; i++)
+            {
+                <div class="map-item"
+                     data-description="Checkout station @i"
+                     onclick="handleAreaSelection(event, 'CH@(i)', 'Checkout @i')">
+                    Checkout @i
+                </div>
+            }
+        </div>
+
+        <div class="map-item power-wall"
+             data-description="Electronics & high-value items"
+             onclick="handleAreaSelection(event, 'PW1-4', 'Power Wall')">
+            Power Wall
+            <span class="aisle-number">A1-A4</span>
+        </div>
+
+        <div class="map-item window-display"
+             data-description="Seasonal promotions display"
+             onclick="handleAreaSelection(event, 'WD1', 'Window Display')">
+            Window Display
+        </div>
+
+        <div class="map-item impulse"
+             data-description="Last-minute purchase items"
+             onclick="handleAreaSelection(event, 'IMP1-2', 'Impulse Zone')">
+            Impulse Zone
+            <span class="aisle-number">I1-I2</span>
+        </div>
+
+        <div class="grocery-aisles">
+            @foreach (var aisle in (SelectList)ViewData["AisleID"])
+            {
+                <div class="aisle-group @GetCssClass(aisle.Text)"
+                     data-aisle="@aisle.Value"
+                     onclick="handleAreaSelection(event, '@aisle.Value', '@aisle.Text')">
+                    <div class="map-item" data-description="@GetAreaDescription(aisle.Text)">
+                        <span class="aisle-number">@aisle.Value</span>
+                        @aisle.Text
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="guide-panel">
+        <h4 style="color: var(--primary-blue);">Store Map Guide</h4>
+        <div id="guide-content">
+            <p style="color: var(--primary-blue);">Click any area to select it for customer assistance requests.</p>
+            <div class="zoom-controls mb-3">
+                <button class="btn btn-sm me-2" onclick="zoomIn()">Zoom In +</button>
+                <button class="btn btn-sm" onclick="zoomOut()">Zoom Out -</button>
+            </div>
+            <div id="area-info">
+                <h5 style="color: var(--primary-blue);">
+                    Selected:
+                    <span id="selected-area" style="color: var(--accent-blue);">None</span>
+                </h5>
+                <p id="area-description" class="text-muted" style="color: var(--primary-blue);">
+                    Select an area to view details
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createModalLabel">Customer Assistance Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AisleID" class="form-label text-dark"></label>
+                        <select id="AisleID" asp-for="AisleID" class="form-select" required
+                                asp-items="@(ViewData["AisleID"] as SelectList)">
+                            <option value="">Select Aisle</option>
+                        </select>
+                        <span asp-validation-for="AisleID" class="text-danger"></span>
+                        <div id="aisleError" class="text-danger d-none">Please select a valid grocery aisle</div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="CustomerID" class="form-label text-dark">Customer Name</label>
+                            <select asp-for="CustomerID" class="form-select"
+                                    asp-items="@(ViewData["CustomerID"] as SelectList)">
+                                <option value="">Select Customer</option>
+                            </select>
+                            <span asp-validation-for="CustomerID" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 d-none">
+                            <label asp-for="StaffID" class="form-label text-dark"></label>
+                            <select asp-for="StaffID" class="form-select"
+                                    asp-items="@(ViewData["StaffID"] as SelectList)">
+                                <option value="">Select Staff</option>
+                            </select>
+                            <span asp-validation-for="StaffID" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3 d-none">
+                        <label asp-for="RequestStatus" class="form-label text-dark"></label>
+                        <select asp-for="RequestStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="InProgress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <span asp-validation-for="RequestStatus" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="RequestDate" class="form-label text-dark"></label>
+                        <input asp-for="RequestDate" class="form-control"
+                               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="RequestDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-life-ring me-2"></i>Request Assistance
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentZoom = 1;
+    const areaData = {
+        'ENT': { description: 'Main customer entrance with security gates' },
+    @foreach (var item in (SelectList)ViewData["AisleID"])
+    {
+        <text>'@item.Value': {
+                        description: '@GetAreaDescription(item.Text)',
+                        section: '@GetCssClass(item.Text)'
+                    },</text>
+    }
+    @for (int i = 1; i <= 3; i++)
+    {
+        <text>'CH@i': { description: 'Checkout station @i' },</text>
+    }
+    };
+
+    function handleAreaSelection(event, id, name) {
+        const aisleInput = document.getElementById('AisleID');
+        const errorElement = document.getElementById('aisleError');
+
+        document.querySelectorAll('.map-item').forEach(item => item.classList.remove('selected-area'));
+        errorElement.classList.add('d-none');
+
+        if (!id.startsWith("CH") && !id.startsWith("ENT") &&
+            !id.startsWith("PW") && !id.startsWith("WD") && !id.startsWith("IMP")) {
+            const aisleId = parseInt(id, 10);
+
+            if (!isNaN(aisleId)) {
+                aisleInput.value = aisleId;
+                errorElement.classList.add('d-none');
+            } else {
+                aisleInput.value = "";
+                errorElement.classList.remove('d-none');
+            }
+        } else {
+            aisleInput.value = "";
+            errorElement.classList.remove('d-none');
+        }
+
+        const clickedElement = event.target.closest('.map-item');
+        clickedElement.classList.add('selected-area');
+        document.getElementById('selected-area').textContent = name;
+        document.getElementById('area-description').textContent =
+            areaData[id]?.description || 'Store section - General merchandise';
+
+        const modal = new bootstrap.Modal(document.getElementById('createModal'));
+        modal.show();
+    }
+    function zoomIn() {
+        currentZoom = Math.min(1.2, currentZoom + 0.1);
+        document.querySelector('.store-map').style.transform = `scale(${currentZoom})`;
+        document.querySelector('.store-map').style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    function zoomOut() {
+        currentZoom = Math.max(0.7, currentZoom - 0.1);
+        document.querySelector('.store-map').style.transform = `scale(${currentZoom})`;
+        document.querySelector('.store-map').style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+</script>
+
+@functions {
+    private string GetCssClass(string aisleName)
+    {
+        var aisles = ViewData["Aisle"] as IEnumerable<ShopEase.Models.Aisle>;
+        var aisle = aisles?.FirstOrDefault(a => a.AisleName == aisleName);
+        return aisle?.StoreSection?.ToLower() switch
+        {
+            "produce" => "produce",
+            "bakery" => "bakery",
+            "dairy" => "dairy",
+            "frozen" => "frozen",
+            "household" => "household",
+            _ => "aisle-default"
+        };
+    }
+
+    private string GetAreaDescription(string aisleName)
+    {
+        var aisles = ViewData["Aisle"] as IEnumerable<ShopEase.Models.Aisle>;
+        var aisle = aisles?.FirstOrDefault(a => a.AisleName == aisleName);
+        return aisle?.StoreSection switch
+        {
+            "Produce" => $"Fresh {aisle.AisleName} section",
+            "Bakery" => $"Fresh {aisle.AisleName} goods",
+            "Dairy" => $"{aisle.AisleName} products",
+            "Frozen" => $"Frozen {aisle.AisleName} items",
+            _ => $"{aisle?.AisleName} ({aisle?.StoreSection})"
+        };
+    }
+}

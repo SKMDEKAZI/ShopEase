@@ -1,48 +1,223 @@
 ﻿@model ShopEase.Models.CustomerRequest
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Request Details - ShopEase";
 }
 
-<h1>Details</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<div>
-    <h4>CustomerRequest</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RequestStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RequestStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RequestDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RequestDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Aisle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Aisle.AisleName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.CustomerEmail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Staff)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Staff.AvailabilityStatus)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+</head>
+
+<style>
+    .header-container {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        margin: 2rem auto;
+        max-width: 90%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        padding: 2.5rem;
+    }
+
+    .status-alert {
+        background: rgba(255, 193, 7, 0.15);
+        border-left: 4px solid var(--warning-orange);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .loading-spinner {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--warning-orange);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .status-message {
+        color: var(--text-primary);
+        margin: 0;
+        font-weight: 500;
+    }
+
+        .status-message strong {
+            color: var(--warning-orange);
+        }
+
+    :root {
+        --text-primary: #2C3E50;
+        --text-secondary: #4F7A9C;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .detail-label {
+        color: var(--primary-blue) !important;
+        font-weight: 600;
+    }
+
+    .detail-value {
+        color: var(--text-primary) !important;
+        font-size: 1.1rem;
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background-color: var(--warning-orange);
+        color: white;
+    }
+
+    .status-inprogress {
+        background-color: var(--accent-blue);
+        color: white;
+    }
+
+    .status-completed {
+        background-color: var(--success-green);
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <!-- Main Content -->
+        <main class="py-4">
+            <div class="content-card shadow-lg">
+                <div class="card-header bg-primary text-white border-0 rounded-top-1">
+                    <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Request Details</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <dl class="row g-3">
+                        <!-- Request ID -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-hashtag me-2"></i>@Html.DisplayNameFor(model => model.Id)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                #@Html.DisplayFor(model => model.Id)
+                            </dd>
+                        </div>
+
+                        <!-- Status with conditional styling -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-info-circle me-2"></i>@Html.DisplayNameFor(model => model.RequestStatus)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                @Html.DisplayFor(model => model.RequestStatus)
+                            </dd>
+                        </div>
+
+                        @if (Model.RequestStatus == "Pending")
+                        {
+                            <div class="status-alert">
+                                <div class="loading-spinner"></div>
+                                <p class="status-message">
+                                    <strong>Awaiting Staff Response:</strong>
+                                    Your request is in the queue. A staff member will accept it shortly.
+                                </p>
+                            </div>
+                        }
+
+
+                        <!-- Date Row -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-calendar-alt me-2"></i>@Html.DisplayNameFor(model => model.RequestDate)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                @Model.RequestDate.ToString("yyyy-MM-dd HH:mm")
+                            </dd>
+                        </div>
+
+                        <!-- Aisle Section -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-map-signs me-2"></i>@Html.DisplayNameFor(model => model.Aisle)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                @Html.DisplayFor(model => model.Aisle.AisleName)
+                            </dd>
+                        </div>
+
+                        <!-- Customer Section -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-user-tag me-2"></i>@Html.DisplayNameFor(model => model.Customer)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                @Html.DisplayFor(model => model.Customer.CustomerName)
+                            </dd>
+                        </div>
+
+                        <!-- Staff Section with null check -->
+                        <div class="col-md-6">
+                            <dt class="detail-label">
+                                <i class="fas fa-headset me-2"></i>@Html.DisplayNameFor(model => model.Staff)
+                            </dt>
+                            <dd class="detail-value mb-4">
+                                @if (Model.Staff != null)
+                                {
+                                    @($"{Model.Staff.Name} {Model.Staff.Surname}")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not assigned yet</span>
+                                }
+                            </dd>
+
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-4 d-flex justify-content-between">
+
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-accent shiny-button">
+                    <i class="fas fa-edit me-2"></i>Edit Request
+                </a>
+            </div>
+        </main>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    }
+</body>
+</html>

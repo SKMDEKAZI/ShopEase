@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopEase.Data;
 
@@ -11,9 +12,11 @@ using ShopEase.Data;
 namespace ShopEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250210210203_IntergratePassword")]
+    partial class IntergratePassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace ShopEase.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -73,7 +76,7 @@ namespace ShopEase.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -97,7 +100,7 @@ namespace ShopEase.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StaffClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -118,7 +121,7 @@ namespace ShopEase.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StaffLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -133,7 +136,7 @@ namespace ShopEase.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("StaffRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -152,7 +155,7 @@ namespace ShopEase.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("StaffTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("ShopEase.Models.Admin", b =>
@@ -362,10 +365,6 @@ namespace ShopEase.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StaffID")
-                        .HasColumnType("int")
-                        .HasColumnName("StaffID");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -389,7 +388,7 @@ namespace ShopEase.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Staff", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
@@ -397,17 +396,13 @@ namespace ShopEase.Migrations
                             Id = 1,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "john.doe@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "de36d7f7-38dd-4af1-8d88-5ec795678a8a",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "John",
-                            NormalizedUserName = "JOHN.DOE",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN3xWzF/C9QdU6dGr//ZlT++albdGLEDm3D7Yr07o6JzlYM+8Xq0t7Mn2nXJupWcyQ==",
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
-                            SecurityStamp = "SECSTAMP-0001",
-                            StaffID = 1,
                             Surname = "Doe",
                             TwoFactorEnabled = false,
                             UserName = "john.doe"
@@ -417,17 +412,13 @@ namespace ShopEase.Migrations
                             Id = 2,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Unavailable",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "sikholwe.mdekazi@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "db40d7f5-f256-4697-bf27-449c7afe5f34",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Sikholwe",
-                            NormalizedUserName = "SIKHOLE.MDEKAZI",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAuXRFkWPK+S8Qf6x7UHwQ87dfb9002aG0B18NUv7ZuYQEWwZCmMor/UHcUZzqx5Cw==",
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
-                            SecurityStamp = "SECSTAMP-0002",
-                            StaffID = 2,
                             Surname = "Mdekazi",
                             TwoFactorEnabled = false,
                             UserName = "sikholwe.mdekazi"
@@ -437,17 +428,13 @@ namespace ShopEase.Migrations
                             Id = 3,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "michael.brown@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "025e27b5-ba92-48d6-a192-5b9d8291754b",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Michael",
-                            NormalizedUserName = "MICHAEL.BROWN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMEZFflA7pFOywVs/6gXMDt8uZh4CZtn0Mpf5cr6iu/KbyVwUyfQ6JUl2InLY0mqkg==",
                             PhoneNumberConfirmed = false,
                             Role = "Store Manager",
-                            SecurityStamp = "SECSTAMP-0003",
-                            StaffID = 3,
                             Surname = "Brown",
                             TwoFactorEnabled = false,
                             UserName = "michael.brown"
@@ -457,17 +444,13 @@ namespace ShopEase.Migrations
                             Id = 4,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "emily.davis@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "472842cc-b3da-47fa-8b79-c09903aa087b",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Emily",
-                            NormalizedUserName = "EMILY.DAVIS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKX7Tjc3zWxQ9n9ZhpJ0kp+DMoVOeJcXMPksxF3eEEiZtLQdFgfpOwg9ppzOMUhy9w==",
                             PhoneNumberConfirmed = false,
                             Role = "Cashier",
-                            SecurityStamp = "SECSTAMP-0004",
-                            StaffID = 4,
                             Surname = "Davis",
                             TwoFactorEnabled = false,
                             UserName = "emily.davis"
@@ -477,17 +460,13 @@ namespace ShopEase.Migrations
                             Id = 5,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Busy",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "david.wilson@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "74a044ae-231b-4469-ad15-6c34034aef66",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "David",
-                            NormalizedUserName = "DAVID.WILSON",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBmCSbQpFByYoARwIRr8Up69XMe3XVi6Qeqg9S6b3vakVmAAOTVynrVa5dWXb2P7vg==",
                             PhoneNumberConfirmed = false,
                             Role = "Stock Associate",
-                            SecurityStamp = "SECSTAMP-0005",
-                            StaffID = 5,
                             Surname = "Wilson",
                             TwoFactorEnabled = false,
                             UserName = "david.wilson"
@@ -497,17 +476,13 @@ namespace ShopEase.Migrations
                             Id = 6,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "sophia.martinez@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "b8e3360c-ee8f-4703-a884-4c47bdf95637",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Sophia",
-                            NormalizedUserName = "SOPHIA.MARTINEZ",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENANqDa0w9BkqbPRbEGGcs+E/t8lzyNbze7wN696FjNsWaBteyJdWauIqIkcf4+R1w==",
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
-                            SecurityStamp = "SECSTAMP-0006",
-                            StaffID = 6,
                             Surname = "Martinez",
                             TwoFactorEnabled = false,
                             UserName = "sophia.martinez"
@@ -517,17 +492,13 @@ namespace ShopEase.Migrations
                             Id = 7,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "james.anderson@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "3edb4466-b67d-46c2-8ced-479d75072c94",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "James",
-                            NormalizedUserName = "JAMES.ANDERSON",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEPqNJNHF5LCbQk//2+RnbPOCZIXjr6LCnBbtOtha3SL9O3dxYSXwmtree8pmhhVZg==",
                             PhoneNumberConfirmed = false,
                             Role = "Security",
-                            SecurityStamp = "SECSTAMP-0007",
-                            StaffID = 7,
                             Surname = "Anderson",
                             TwoFactorEnabled = false,
                             UserName = "james.anderson"
@@ -537,17 +508,13 @@ namespace ShopEase.Migrations
                             Id = 8,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Busy",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "olivia.taylor@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "40aac5bc-7dbb-4178-9aa3-c1253092f58c",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Olivia",
-                            NormalizedUserName = "OLIVIA.TAYLOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF77Ndij29N+BzEczSn25G5mK87odJw5JsSXRHcDwnIlYjq913xw1+A96wm45chzjw==",
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
-                            SecurityStamp = "SECSTAMP-0008",
-                            StaffID = 8,
                             Surname = "Taylor",
                             TwoFactorEnabled = false,
                             UserName = "olivia.taylor"
@@ -557,17 +524,13 @@ namespace ShopEase.Migrations
                             Id = 9,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "robert.thomas@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "8f6a53d9-45ef-4437-b080-fd9d568f1d6f",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Robert",
-                            NormalizedUserName = "ROBERT.THOMAS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAB7amPMsjmkyRQULjlkQbIy5lXTk1/3DQB/yNqHWC/D4YNWxBUZ+nAl2suNsfBVgQ==",
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
-                            SecurityStamp = "SECSTAMP-0009",
-                            StaffID = 9,
                             Surname = "Thomas",
                             TwoFactorEnabled = false,
                             UserName = "robert.thomas"
@@ -577,17 +540,13 @@ namespace ShopEase.Migrations
                             Id = 10,
                             AccessFailedCount = 0,
                             AvailabilityStatus = "Available",
-                            ConcurrencyStamp = "9C7D1A2B-1234-5678-90AB-CDEF12345678",
-                            Email = "emma.harris@example.com",
-                            EmailConfirmed = true,
+                            ConcurrencyStamp = "9924bee6-6f9a-4c35-a61b-d2d1b1c11eab",
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Emma",
-                            NormalizedUserName = "EMMA.HARRIS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC0IoxMccfONAhn3G9Pz1Ckf4zATNne4fKdG7ykU6IoDzjiENNBkqN+xA2XBPxtiVQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEB5ICy+RLcVvx2OhggQ16mqmKyNW7DqIY99HI5P21uEJfzoxQKUO+/cAKXLbbgDmiw==",
                             PhoneNumberConfirmed = false,
                             Role = "Customer Service",
-                            SecurityStamp = "SECSTAMP-0010",
-                            StaffID = 10,
                             Surname = "Harris",
                             TwoFactorEnabled = false,
                             UserName = "emma.harris"

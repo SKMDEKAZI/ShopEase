@@ -8,39 +8,49 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Remove default body margin */
         body {
             margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
         /* Navbar adjustments */
-        .navbar {
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #1E3A56;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
 
         /* Main content wrapper */
         .main-content {
             flex: 1;
-            padding-bottom: 0;
-            margin-bottom: 0;
+            padding-top: 80px; 
         }
 
-        /* Footer adjustments */
         footer {
-            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #1E3A56;
             padding-top: 0;
             padding-bottom: 0;
+            color: white;
         }
 
-        .footer .container {
-            padding-bottom: 0;
-            margin-bottom: 0;
-        }
+            /* Footer content styling */
+            footer .container {
+                padding-bottom: 0;
+                margin-bottom: 0;
+            }
 
         /* Existing styles */
         .hover-underline {

@@ -1,0 +1,52 @@
+﻿
+@model IEnumerable<ShopEase.Models.CustomerRequest>
+
+@{
+    ViewData["Title"] = "Staff Dashboard";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Customer Requests</h1>
+        <a asp-action="Logout" class="btn btn-secondary">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>Status</th>
+                        <th>Request Date</th>
+                        <th>Aisle</th>
+                        <th>Customer</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge @(item.RequestStatus == "Pending" ? "bg-warning" : "bg-info")">
+                                    @item.RequestStatus
+                                </span>
+                            </td>
+                            <td>@item.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@item.Aisle?.AisleName</td>
+                            <td>@item.Customer?.CustomerEmail</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

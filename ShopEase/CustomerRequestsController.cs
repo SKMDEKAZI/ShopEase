@@ -45,6 +45,7 @@ namespace ShopEase
         // GET: CustomerRequests/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "CustomerName");
             if (id == null)
             {
                 return NotFound();
@@ -113,7 +114,7 @@ namespace ShopEase
 
                 _context.Add(customerRequest);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = customerRequest.Id });
             }
 
             // Repopulate dropdowns if validation fails

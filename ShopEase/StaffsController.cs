@@ -2,28 +2,113 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopEase.Data;
 using ShopEase.Models;
+using ShopEase.Utilities;
 
 namespace ShopEase
 {
     public class StaffsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly SignInManager<Staff> _signInManager;
+        private readonly UserManager<Staff> _userManager;
+        private readonly ILogger<StaffsController> _logger;
 
-        public StaffsController(ApplicationDbContext context)
+        public StaffsController(ApplicationDbContext context, SignInManager<Staff> signInManager, UserManager<Staff> userManager, ILogger<StaffsController> logger)
         {
             _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _logger = logger;
         }
 
-        // GET: Staffs
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("Retrieving all staff members.");
             return View(await _context.Staff.ToListAsync());
         }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: Staffs/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string userName, string password)
+        {
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Username and password are required.";
+                return View();
+            }
+
+            var staff = await _userManager.FindByNameAsync(userName);
+            if (staff == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid credentials. Please try again.");
+                return View();
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(staff, password, isPersistent: false, lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid credentials. Please try again.");
+                return View();
+
+            }
+
+            if (await _userManager.IsInRoleAsync(staff, "Admin"))
+            {
+                return RedirectToAction("AdminDashboard", "Admin");
+            }
+            return RedirectToAction("Dashboard");
+
+        }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var requests = await _context.CustomerRequest
+                .Include(c => c.Aisle)
+                .Include(c => c.Customer)
+                .Include(c => c.Staff)
+                .Where(r => r.StaffID == user.StaffID &&
+                            (r.RequestStatus == "Pending" || r.RequestStatus == "InProgress"))
+                .ToListAsync();
+
+            return View(requests);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult GeneratePassword()
+        {
+            var passwordHasher = new PasswordHasher<object>();
+            string hashedPassword = passwordHasher.HashPassword(null, "ShopEase123!");
+            _logger.LogInformation("Generated password hash: {Hash}", hashedPassword);
+            return RedirectToAction("Index");
+
+        }
+
+
 
         // GET: Staffs/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -58,10 +143,12 @@ namespace ShopEase
         {
             if (ModelState.IsValid)
             {
+                staff.PasswordHash = _userManager.PasswordHasher.HashPassword(staff, "DefaultPassword123!");
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(staff);
         }
 

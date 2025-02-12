@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopEase.Data;
 
@@ -11,9 +12,11 @@ using ShopEase.Data;
 namespace ShopEase.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250211222257_AddNewData")]
+    partial class AddNewData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -362,10 +365,6 @@ namespace ShopEase.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StaffID")
-                        .HasColumnType("int")
-                        .HasColumnName("StaffID");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -407,7 +406,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
                             SecurityStamp = "SECSTAMP-0001",
-                            StaffID = 1,
                             Surname = "Doe",
                             TwoFactorEnabled = false,
                             UserName = "john.doe"
@@ -427,7 +425,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
                             SecurityStamp = "SECSTAMP-0002",
-                            StaffID = 2,
                             Surname = "Mdekazi",
                             TwoFactorEnabled = false,
                             UserName = "sikholwe.mdekazi"
@@ -447,7 +444,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Store Manager",
                             SecurityStamp = "SECSTAMP-0003",
-                            StaffID = 3,
                             Surname = "Brown",
                             TwoFactorEnabled = false,
                             UserName = "michael.brown"
@@ -467,7 +463,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Cashier",
                             SecurityStamp = "SECSTAMP-0004",
-                            StaffID = 4,
                             Surname = "Davis",
                             TwoFactorEnabled = false,
                             UserName = "emily.davis"
@@ -487,7 +482,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Stock Associate",
                             SecurityStamp = "SECSTAMP-0005",
-                            StaffID = 5,
                             Surname = "Wilson",
                             TwoFactorEnabled = false,
                             UserName = "david.wilson"
@@ -507,7 +501,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
                             SecurityStamp = "SECSTAMP-0006",
-                            StaffID = 6,
                             Surname = "Martinez",
                             TwoFactorEnabled = false,
                             UserName = "sophia.martinez"
@@ -527,7 +520,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Security",
                             SecurityStamp = "SECSTAMP-0007",
-                            StaffID = 7,
                             Surname = "Anderson",
                             TwoFactorEnabled = false,
                             UserName = "james.anderson"
@@ -547,7 +539,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
                             SecurityStamp = "SECSTAMP-0008",
-                            StaffID = 8,
                             Surname = "Taylor",
                             TwoFactorEnabled = false,
                             UserName = "olivia.taylor"
@@ -567,7 +558,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Floor Assistant",
                             SecurityStamp = "SECSTAMP-0009",
-                            StaffID = 9,
                             Surname = "Thomas",
                             TwoFactorEnabled = false,
                             UserName = "robert.thomas"
@@ -587,7 +577,6 @@ namespace ShopEase.Migrations
                             PhoneNumberConfirmed = false,
                             Role = "Customer Service",
                             SecurityStamp = "SECSTAMP-0010",
-                            StaffID = 10,
                             Surname = "Harris",
                             TwoFactorEnabled = false,
                             UserName = "emma.harris"

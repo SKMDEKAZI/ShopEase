@@ -23,17 +23,18 @@ namespace ShopEase.Models
         public int CustomerID { get; set; }
 
         [Display(Name = "Status")]
-        public string RequestStatus { get; set; } = "Pending"; 
+        public string RequestStatus { get; set; } = "Pending";
 
+        // Ensure StaffID is mapped correctly
         [ForeignKey("Staff")]
         [Display(Name = "Assigned Staff")]
-        public int? StaffID { get; set; } // Made nullable
+        public int? StaffID { get; set; } // Use 'StaffId' instead of 'StaffID'
 
         [Required(ErrorMessage = "Request date is required")]
         [Display(Name = "Request Time")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
-        public DateTime RequestDate { get; set; } = DateTime.Now;  
+        public DateTime RequestDate { get; set; } = DateTime.Now;
 
         // Navigation properties
         public virtual Aisle? Aisle { get; set; }

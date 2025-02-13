@@ -1,47 +1,164 @@
-﻿
-@model IEnumerable<ShopEase.Models.CustomerRequest>
-
+﻿@model ShopEase.Models.StaffDashboardViewModel
 @{
     ViewData["Title"] = "Staff Dashboard";
 }
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2A2E45;
+            --secondary-color: #5C6BC0;
+            --accent-color: #42A5F5;
+        }
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary">Customer Requests</h1>
-        <a asp-action="Logout" class="btn btn-secondary">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
+        body {
+            background-color: #F8F9FA;
+        }
+
+        .dashboard-header {
+            background: #1E3A56;
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--accent-color);
+            }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .request-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .availability-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="mb-0">Staff Dashboard</h1>
+                <p class="lead mb-0">Welcome back, @Model.Staff.Name!</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="availability-status @GetStatusBadgeClass(Model.Staff.AvailabilityStatus) pulse">
+                    @Model.Staff.AvailabilityStatus
+                    <button id="toggleStatus" class="btn btn-sm btn-light ms-3">Change Status</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="card shadow">
-        <div class="card-body">
-            <table class="table table-hover">
-                <thead class="bg-primary text-white">
+    <!-- Requests Table -->
+    <div class="request-table">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="bg-light text-black" style="background-color:deepskyblue">
                     <tr>
                         <th>Status</th>
                         <th>Request Date</th>
                         <th>Aisle</th>
-                        <th>Customer</th>
+                        <th>Customer Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model)
+                <tbody id="requests-body">
+                    @foreach (var item in Model.Requests)
                     {
-                        <tr>
+                        <tr data-request-id="@item.Id">
+                            <!-- Added data-request-id -->
                             <td>
-                                <span class="badge @(item.RequestStatus == "Pending" ? "bg-warning" : "bg-info")">
+                                <div class="status-badge @(item.RequestStatus == "Pending" ? "bg-warning" : "bg-info")">
                                     @item.RequestStatus
-                                </span>
+                                </div>
                             </td>
                             <td>@item.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>@item.Aisle?.AisleName</td>
-                            <td>@item.Customer?.CustomerEmail</td>
+                            <td>@($"{item.Customer?.CustomerName} {item.Customer?.CustomerSurname}")</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-primary">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+                                <div class="d-flex gap-2">
+                                    @if (item.RequestStatus == "Pending")
+                                    {
+                                        <button class="btn btn-sm btn-success accept-btn" data-id="@item.Id">
+                                            <i class="fas fa-check me-2"></i>Accept
+                                        </button>
+                                    }
+                                    @if (item.RequestStatus != "Completed")
+                                    {
+                                        <button class="btn btn-sm btn-primary complete-btn" data-id="@item.Id">
+                                            <i class="fas fa-check-double me-2"></i>Complete
+                                        </button>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }
@@ -50,3 +167,281 @@
         </div>
     </div>
 </div>
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-uppercase text-muted mb-0 text-black">Pending Requests</h6>
+                        <h3 class="mb-0 text-black">@Model.PendingRequestsCount</h3>
+                    </div>
+                    <div class="icon-circle bg-warning">
+                        <i class="fas fa-clock text-white"></i>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar bg-warning" role="progressbar"
+                         style="width: @((Model.PendingRequestsCount * 100)/ (Model.Requests.Count() == 0 ? 1 : Model.Requests.Count()))%"
+                         aria-valuenow="@Model.PendingRequestsCount"
+                         aria-valuemin="0"
+                         aria-valuemax="@Model.Requests.Count()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-uppercase text-muted mb-0">In Progress</h6>
+                        <h3 class="mb-0 text-black">@Model.InProgressRequestsCount</h3>
+                    </div>
+                    <div class="icon-circle bg-info">
+                        <i class="fas fa-tasks text-white"></i>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar bg-info" role="progressbar"
+                         style="width: @((Model.InProgressRequestsCount * 100)/ (Model.Requests.Count() == 0 ? 1 : Model.Requests.Count()))%"
+                         aria-valuenow="@Model.InProgressRequestsCount"
+                         aria-valuemin="0"
+                         aria-valuemax="@Model.Requests.Count()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <h6 class="text-uppercase text-muted mb-0">Unassigned</h6>
+                        <h3 class="mb-0 text-black">@Model.UnassignedRequestsCount</h3>
+                    </div>
+                    <div class="icon-circle bg-secondary">
+                        <i class="fas fa-exclamation-triangle text-white"></i>
+                    </div>
+                </div>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar bg-secondary" role="progressbar"
+                         style="width: @((Model.UnassignedRequestsCount * 100)/ (Model.Requests.Count() == 0 ? 1 : Model.Requests.Count()))%"
+                         aria-valuenow="@Model.UnassignedRequestsCount"
+                         aria-valuemin="0"
+                         aria-valuemax="@Model.Requests.Count()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-8">
+            <div class="chart-container">
+                <h5 class="mb-4 text-black" >Request Distribution</h5>
+                <canvas id="requestsChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <h5 class="mb-4 text-black">Status Overview</h5>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+  
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-black">Are you sure you want to accept this request?</p>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Accepting this request will assign it to you and change its status to In Progress.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="confirmAccept">
+                    <i class="fas fa-check me-2"></i>Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        initializeCharts();
+        initializeEventListeners();
+        initializeWebSocket();
+    });
+
+    document.addEventListener("click", function (e) {
+        const completeBtn = e.target.closest(".complete-btn");
+        if (completeBtn) {
+            let requestId = completeBtn.getAttribute("data-id");
+            completeRequest(requestId);
+        }
+    });
+
+    function initializeEventListeners() {
+        // Event listener for "Accept" button
+        document.querySelectorAll(".accept-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const requestId = button.getAttribute("data-id");
+                showConfirmModal(requestId);
+            });
+        });
+
+        // Event listener for "Complete" button
+        document.querySelectorAll(".complete-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const requestId = button.getAttribute("data-id");
+                completeRequest(requestId);
+            });
+        });
+
+        // Event listener for toggle status button
+        document.getElementById("toggleStatus").addEventListener("click", function () {
+            fetch("/Staff/UpdateStatus", { method: "POST" })
+                .then(response => response.json())
+                .then(data => {
+                    const statusElement = document.querySelector(".availability-status");
+                    statusElement.className = `availability-status ${data.badgeClass} pulse`;
+                    statusElement.textContent = data.newStatus;
+                });
+        });
+    }
+
+    function initializeCharts() {
+        const ctx1 = document.getElementById('requestsChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Pending', 'In Progress', 'Unassigned'],
+                datasets: [{
+                    label: 'Requests',
+                    data: [@Model.PendingRequestsCount, @Model.InProgressRequestsCount, @Model.UnassignedRequestsCount],
+                    backgroundColor: ['rgba(255, 193, 7, 0.8)', 'rgba(23, 162, 184, 0.8)', 'rgba(108, 117, 125, 0.8)'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        const ctx2 = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending', 'In Progress', 'Completed'],
+                datasets: [{
+                    label: 'Requests',
+                    data: [@Model.PendingRequestsCount, @Model.InProgressRequestsCount, @Model.Requests.Count(r => r.RequestStatus == "Completed")],
+                    backgroundColor: ['rgba(255, 193, 7, 0.8)', 'rgba(23, 162, 184, 0.8)', 'rgba(40, 167, 69, 0.8)'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    // Function to show confirmation modal
+    function showConfirmModal(requestId) {
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const confirmButton = document.getElementById('confirmAccept');
+
+        // Attach request ID to the "Confirm" button in the modal
+        confirmButton.onclick = function() {
+            acceptRequest(requestId);  // Update status to 'In Progress'
+            modal.hide();
+        };
+
+        modal.show();
+    }
+
+    function acceptRequest(requestId) {
+        // Send the request to update status (you may need AJAX here to interact with the server)
+        fetch(`/requests/accept/${requestId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: requestId })
+        }).then(response => {
+            if (response.ok) {
+                document.querySelector(`tr[data-request-id='${requestId}'] .status-badge`).classList.replace('bg-warning', 'bg-info');
+                document.querySelector(`tr[data-request-id='${requestId}'] .status-badge`).textContent = 'InProgress';
+            }
+        }).catch(error => {
+            console.error("Error updating status:", error);
+        });
+    }
+
+    // Complete Request - Change status to 'Completed'
+    function completeRequest(requestId) {
+        // Send the request to mark it as completed (AJAX call)
+        fetch(`/requests/complete/${requestId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: requestId })
+        }).then(response => {
+            if (response.ok) {
+                // Update the status in the table to 'Completed'
+                document.querySelector(`tr[data-request-id='${requestId}'] .status-badge`).classList.replace('bg-info', 'bg-success');
+                document.querySelector(`tr[data-request-id='${requestId}'] .status-badge`).textContent = 'Completed';
+            }
+        }).catch(error => {
+            console.error("Error completing request:", error);
+        });
+    }
+
+    function initializeWebSocket() {
+        const socket = new WebSocket("wss://localhost:7065/ws");
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (data.type === "new_request") {
+                const newRow = document.createElement('tr');
+                newRow.setAttribute("data-request-id", data.id);
+                newRow.innerHTML = `
+                    <td><div class="status-badge bg-warning">Pending</div></td>
+                    <td>${new Date(data.requestDate).toLocaleString()}</td>
+                    <td>${data.aisleName}</td>
+                    <td>${data.customerEmail}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success accept-btn" data-id="${data.id}">
+                            <i class="fas fa-check me-2"></i>Accept
+                        </button>
+                        <button class="btn btn-sm btn-primary complete-btn" data-id="${data.id}">
+                            <i class="fas fa-check-double me-2"></i>Complete
+                        </button>
+                    </td>`;
+                document.getElementById("requests-body").prepend(newRow);
+                initializeEventListeners();
+            }
+        };
+    }
+</script>
+
+
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Available" => "bg-success",
+            "Busy" => "bg-danger",
+            "Offline" => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}

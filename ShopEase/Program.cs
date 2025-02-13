@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ShopEase.Data;
 using ShopEase.Models;
-
+using ShopEase.Utilities;
+using System.Net.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +23,13 @@ builder.Services.AddIdentity<Staff, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+// Explicitly reference your custom WebSocketManager
+builder.Services.AddSingleton<ShopEase.Utilities.WebSocketManager>();
+
 // Add session support
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Auto logout after inactivity
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -34,7 +37,7 @@ builder.Services.AddSession(options =>
 // Add authentication & authorization middleware
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Staffs/Login"; // Redirect to login if not authenticated
+    options.LoginPath = "/Staffs/Login";
     options.AccessDeniedPath = "/Home/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 });
@@ -51,14 +54,54 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseWebSockets();
+
+// WebSocket middleware
+app.Use(async (context, next) => {
+    if (context.Request.Path == "/ws" && context.WebSockets.IsWebSocketRequest)
+    {
+        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        var webSocketManager = context.RequestServices.GetRequiredService<ShopEase.Utilities.WebSocketManager>();
+        webSocketManager.AddSocket(webSocket);
+        await HandleWebSocketConnection(webSocket, webSocketManager);
+    }
+    else
+    {
+        await next();
+    }
+});
+
+async Task HandleWebSocketConnection(
+    WebSocket webSocket,
+    ShopEase.Utilities.WebSocketManager webSocketManager) // Explicit namespace
+{
+    var buffer = new byte[1024 * 4];
+    try
+    {
+        while (webSocket.State == WebSocketState.Open)
+        {
+            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed", CancellationToken.None);
+                webSocketManager.RemoveSocket(webSocket);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"WebSocket error: {ex.Message}");
+        webSocketManager.RemoveSocket(webSocket);
+        await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Connection error", CancellationToken.None);
+    }
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseSession(); // Enable session middleware
-app.UseAuthentication(); // Enable authentication middleware
-app.UseAuthorization(); // Ensure authorization is enforced
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -28,7 +28,7 @@ namespace ShopEase.Models
         // Ensure StaffID is mapped correctly
         [ForeignKey("Staff")]
         [Display(Name = "Assigned Staff")]
-        public int? StaffID { get; set; } // Use 'StaffId' instead of 'StaffID'
+        public int? StaffID { get; set; } 
 
         [Required(ErrorMessage = "Request date is required")]
         [Display(Name = "Request Time")]

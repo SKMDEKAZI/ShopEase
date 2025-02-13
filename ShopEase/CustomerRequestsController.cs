@@ -81,13 +81,13 @@ namespace ShopEase
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AisleID,CustomerID,RequestStatus,StaffID,RequestDate")] CustomerRequest customerRequest)
+        public async Task<IActionResult> Create([Bind("Id,AisleID,CustomerID,RequestStatus,RequestDate")] CustomerRequest customerRequest)
         {
             // Auto-set values before validation
             customerRequest.RequestStatus ??= "Pending";
             customerRequest.RequestDate = DateTime.Now;
 
-            // Custom validation (should happen BEFORE ModelState.IsValid check)
+            // Custom validation
             if (customerRequest.AisleID < 1)
             {
                 ModelState.AddModelError("AisleID", "Please select a valid aisle");
@@ -95,22 +95,8 @@ namespace ShopEase
 
             if (ModelState.IsValid)
             {
-                // Staff assignment logic
-                if (customerRequest.StaffID == null || customerRequest.StaffID < 1)
-                {
-                    var availableStaff = await _context.Staff
-                        .Where(s => s.AvailabilityStatus == "Available")
-                        .Select(s => new {
-                            Staff = s,
-                            RequestCount = _context.CustomerRequest.Count(cr => cr.StaffID == s.StaffID)
-                        })
-                        .OrderBy(x => x.RequestCount)
-                        .Select(x => x.Staff)
-                        .FirstOrDefaultAsync();
-
-                    customerRequest.StaffID = availableStaff?.StaffID
-                        ?? (await _context.Staff.FirstOrDefaultAsync())?.StaffID;
-                }
+                // Ensure StaffID remains null
+                customerRequest.StaffID = null;
 
                 _context.Add(customerRequest);
                 await _context.SaveChangesAsync();
@@ -120,14 +106,15 @@ namespace ShopEase
             // Repopulate dropdowns if validation fails
             ViewData["AisleID"] = new SelectList(_context.Set<Aisle>(), "AisleID", "AisleName", customerRequest.AisleID);
             ViewData["CustomerID"] = new SelectList(
-          _context.Customer,
-          "CustomerID",
-          "CustomerName + ' ' + CustomerSurname",
-          customerRequest.CustomerID);
+                _context.Customer,
+                "CustomerID",
+                "CustomerName + ' ' + CustomerSurname",
+                customerRequest.CustomerID
+            );
 
-            ViewData["StaffID"] = new SelectList(_context.Staff, "StaffID", "AvailabilityStatus", customerRequest.StaffID);
             return View(customerRequest);
         }
+
 
         // GET: CustomerRequests/Edit/5
         public async Task<IActionResult> Edit(int? id)

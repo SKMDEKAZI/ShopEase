@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using ShopEase.Data;
 using ShopEase.Models;
 using ShopEase.Utilities;
+using System.Text.Json;
 
 namespace ShopEase
 {
@@ -18,13 +20,23 @@ namespace ShopEase
         private readonly SignInManager<Staff> _signInManager;
         private readonly UserManager<Staff> _userManager;
         private readonly ILogger<StaffsController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ShopEase.Utilities.WebSocketManager _webSocketManager; // Explicit namespace
 
-        public StaffsController(ApplicationDbContext context, SignInManager<Staff> signInManager, UserManager<Staff> userManager, ILogger<StaffsController> logger)
+        public StaffsController(
+            ApplicationDbContext context,
+            SignInManager<Staff> signInManager,
+            UserManager<Staff> userManager,
+            ILogger<StaffsController> logger,
+            IHttpContextAccessor httpContextAccessor,
+            ShopEase.Utilities.WebSocketManager webSocketManager) // Explicit namespace
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
+            _webSocketManager = webSocketManager;
         }
 
         public async Task<IActionResult> Index()
@@ -71,26 +83,111 @@ namespace ShopEase
             return RedirectToAction("Dashboard");
 
         }
-
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
+            if (user == null) return RedirectToAction("Login");
 
             var requests = await _context.CustomerRequest
                 .Include(c => c.Aisle)
                 .Include(c => c.Customer)
                 .Include(c => c.Staff)
-                .Where(r => r.StaffID == user.StaffID &&
+                .Where(r => (r.StaffID == null || r.StaffID == user.StaffID) &&
                             (r.RequestStatus == "Pending" || r.RequestStatus == "InProgress"))
                 .ToListAsync();
 
-            return View(requests);
+            var viewModel = new StaffDashboardViewModel
+            {
+                Staff = user,
+                Requests = requests
+            };
+
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult UpdateRequestStatus(int id, string status)
+        {
+            var request = _context.CustomerRequest.FirstOrDefault(r => r.Id == id);
+            if (request == null)
+            {
+                return Json(new { success = false, message = "Request not found" });
+            }
+
+            request.RequestStatus = status;
+            _context.SaveChanges();
+
+            return Json(new { success = true });
         }
 
+
+        private async Task SendWebSocketUpdate(object data)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(data);
+                var bytes = Encoding.UTF8.GetBytes(json);
+                await _webSocketManager.BroadcastAsync(bytes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending WebSocket update");
+            }
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteRequest(int id)
+        {
+            var request = await _context.CustomerRequest.FindAsync(id);
+            if (request == null) return NotFound();
+
+            request.RequestStatus = "Completed";
+            _context.Update(request);
+            await _context.SaveChangesAsync();
+
+            // Send WebSocket update
+            await SendWebSocketUpdate(new
+            {
+                type = "request_completed",
+                id = request.Id,
+                status = request.RequestStatus
+            });
+
+            return Json(new { success = true });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AcceptRequest(int id)
+        {
+            var request = await _context.CustomerRequest
+                .Include(r => r.Staff)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (request == null) return NotFound();
+
+            // Update request status
+            request.RequestStatus = "InProgress";
+
+            // Update staff availability
+            var staff = await _userManager.GetUserAsync(User);
+            staff.AvailabilityStatus = "Busy";
+
+            await _userManager.UpdateAsync(staff);
+            _context.Update(request);
+            await _context.SaveChangesAsync();
+
+            // Send WebSocket update
+            await SendWebSocketUpdate(new
+            {
+                type = "request_updated",
+                id = request.Id,
+                status = request.RequestStatus,
+                staffId = staff.Id
+            });
+
+            return Json(new { success = true });
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
